@@ -299,7 +299,7 @@
         /* Course Grid */
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
         }
 
@@ -310,6 +310,8 @@
             overflow: hidden;
             transition: all 0.4s ease;
             backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
         }
 
         .course-card:hover {
@@ -355,16 +357,25 @@
             border-radius: 3px;
         }
 
+        .course-type.workshop { background: #8b5cf6; color: #fff; }
+        .course-type.masterclass { background: #ec4899; color: #fff; }
+        .course-type.ritual { background: #10b981; color: #fff; }
+        .course-type.desafio { background: #f59e0b; color: #000; }
+        .course-type.mentoria { background: #3b82f6; color: #fff; }
+        .course-type.programa { background: #ef4444; color: #fff; }
+        .course-type.jornada { background: #6366f1; color: #fff; }
+
         .course-info {
             padding: 25px;
         }
 
         .course-title {
             font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--gold-light);
             margin-bottom: 10px;
             letter-spacing: 1px;
+            line-height: 1.4;
         }
 
         .course-desc {
@@ -382,7 +393,7 @@
             border-top: 1px solid rgba(212, 175, 55, 0.1);
         }
 
-        .course-duration {
+        .course-status {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -390,8 +401,11 @@
             color: rgba(255,255,255,0.5);
         }
 
+        .course-status.available { color: #10b981; }
+        .course-status.coming { color: #f59e0b; }
+
         .course-btn {
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
             border: none;
             color: var(--dark-bg);
@@ -402,6 +416,8 @@
             cursor: pointer;
             border-radius: 5px;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .course-btn:hover {
@@ -409,36 +425,26 @@
             box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
         }
 
-        /* Locked Card */
-        .course-card.locked {
-            opacity: 0.6;
-            filter: grayscale(30%);
+        .course-btn.coming-soon {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            cursor: not-allowed;
         }
 
-        .course-card.locked .course-thumbnail::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
+        .course-btn.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Single Card Center */
+        .courses-grid.single-item {
             display: flex;
-            align-items: center;
             justify-content: center;
         }
 
-        .lock-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-        }
-
-        .lock-overlay i {
-            font-size: 2.5rem;
-            color: rgba(255,255,255,0.8);
+        .courses-grid.single-item .course-card {
+            max-width: 450px;
+            width: 100%;
         }
 
         /* Divider */
@@ -467,6 +473,21 @@
             color: rgba(255,255,255,0.5);
             font-size: 0.9rem;
             letter-spacing: 2px;
+        }
+
+        .footer-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--gold-primary);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
 
         /* Decorative Elements */
@@ -514,28 +535,12 @@
             .logo-text {
                 font-size: 1rem;
             }
-        }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 0.65rem;
             }
         }
-
-        .course-card {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .course-card:nth-child(1) { animation-delay: 0.1s; }
-        .course-card:nth-child(2) { animation-delay: 0.2s; }
-        .course-card:nth-child(3) { animation-delay: 0.3s; }
-        .course-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
@@ -571,7 +576,7 @@
         </div>
     </section>
 
-    <!-- NÍVEL 1 - ENTRADA -->
+    <!-- NÍVEL 1 - ENTRADA / ANÚBIS -->
     <section class="level-section level-1" id="nivel-1">
         <video class="video-background" autoplay muted loop playsinline>
             <source src="https://res.cloudinary.com/dlueoyrhe/video/upload/v1764885968/grok-video-a5b84555-b67b-4792-9fa3-1c53406bba42_rswk1k.mp4" type="video/mp4">
@@ -592,62 +597,82 @@
             </div>
 
             <div class="courses-grid">
+                <!-- Curso Akasha -->
                 <div class="course-card">
                     <div class="course-thumbnail">
-                        <i class="fas fa-door-open"></i>
-                        <span class="course-type">MASTERCLASS</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">O Despertar Inicial</h3>
-                        <p class="course-desc">Primeiros passos na jornada de autoconhecimento e transformação pessoal.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 2h 30min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-key"></i>
-                        <span class="course-type">WORKSHOP</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Chaves do Subconsciente</h3>
-                        <p class="course-desc">Desbloqueie as portas internas que impedem seu progresso.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 1h 45min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-fire"></i>
                         <span class="course-type">CURSO</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Além do Véu</h3>
-                        <p class="course-desc">Introdução aos mistérios ocultos e à percepção expandida.</p>
+                        <h3 class="course-title">Akasha Fascinação, Tantra e Magnetismo</h3>
+                        <p class="course-desc">O curso completo para despertar seu magnetismo pessoal e dominar a arte da fascinação através dos princípios tântricos.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 4h 15min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status available"><i class="fas fa-check-circle"></i> Disponível</span>
+                            <a href="https://hubcomplier.github.io/CURSOAKASHA/" target="_blank" class="course-btn">ACESSAR</a>
                         </div>
                     </div>
                 </div>
 
+                <!-- Desafio 7 Dias -->
                 <div class="course-card">
                     <div class="course-thumbnail">
-                        <i class="fas fa-scroll"></i>
-                        <span class="course-type">GRAVAÇÃO</span>
+                        <i class="fas fa-bolt"></i>
+                        <span class="course-type desafio">DESAFIO</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Rituais de Iniciação</h3>
-                        <p class="course-desc">Práticas fundamentais para iniciar sua transformação.</p>
+                        <h3 class="course-title">Desafio 7 Dias de Magnetismo Pessoal</h3>
+                        <p class="course-desc">Uma semana intensiva de práticas diárias para ativar e potencializar seu campo magnético pessoal.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 3h 00min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status available"><i class="fas fa-check-circle"></i> Disponível</span>
+                            <a href="https://pay.hotmart.com/W102015202C" target="_blank" class="course-btn">ACESSAR</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Masterclass -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <i class="fas fa-gem"></i>
+                        <span class="course-type masterclass">MASTERCLASS</span>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">O Poder da Fascinação e Magnetismo</h3>
+                        <p class="course-desc">Masterclass revelando os segredos ancestrais do magnetismo pessoal e como usar a fascinação no dia a dia.</p>
+                        <div class="course-meta">
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ritual para Casais -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <i class="fas fa-heart"></i>
+                        <span class="course-type ritual">RITUAL</span>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">Ritual para Casais: Intimidade Reascendida</h3>
+                        <p class="course-desc">Práticas sagradas para reacender a chama do relacionamento e criar uma conexão profunda com seu parceiro(a).</p>
+                        <div class="course-meta">
+                            <span class="course-status available"><i class="fas fa-check-circle"></i> Disponível</span>
+                            <a href="https://hubcomplier.github.io/ROYALRITUAL/" target="_blank" class="course-btn">ACESSAR</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workshop Tantra -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <i class="fas fa-yin-yang"></i>
+                        <span class="course-type workshop">WORKSHOP</span>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">Tantra é Diferente de Sexo</h3>
+                        <p class="course-desc">Workshop esclarecedor que desvenda os verdadeiros princípios do Tantra além dos mitos e equívocos comuns.</p>
+                        <div class="course-meta">
+                            <span class="course-status available"><i class="fas fa-check-circle"></i> Disponível</span>
+                            <a href="https://pay.hotmart.com/D101794475T" target="_blank" class="course-btn">ACESSAR</a>
                         </div>
                     </div>
                 </div>
@@ -659,7 +684,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- NÍVEL 2 - PREMIUM -->
+    <!-- NÍVEL 2 - PREMIUM / HORUS -->
     <section class="level-section level-2" id="nivel-2">
         <video class="video-background" autoplay muted loop playsinline>
             <source src="https://res.cloudinary.com/dlueoyrhe/video/upload/v1764885777/oficial_horuss_ylm0kv.mp4" type="video/mp4">
@@ -680,62 +705,66 @@
             </div>
 
             <div class="courses-grid">
+                <!-- A Senda Tântrica -->
                 <div class="course-card">
                     <div class="course-thumbnail">
-                        <i class="fas fa-eye"></i>
-                        <span class="course-type">MASTERMIND</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Visão de Horus</h3>
-                        <p class="course-desc">Desenvolva a percepção aguçada que transcende a realidade comum.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 5h 30min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-route"></i>
-                        <span class="course-type">MASTERCLASS</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Navegando o Labirinto</h3>
-                        <p class="course-desc">Estratégias para superar obstáculos e encontrar seu caminho verdadeiro.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 3h 45min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-sun"></i>
-                        <span class="course-type">WORKSHOP</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Horizonte Infinito</h3>
-                        <p class="course-desc">Expanda sua visão e alcance novos patamares de consciência.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 2h 15min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-compass"></i>
+                        <i class="fas fa-road"></i>
                         <span class="course-type">CURSO</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Bússola Interior</h3>
-                        <p class="course-desc">Encontre sua direção verdadeira através da intuição refinada.</p>
+                        <h3 class="course-title">A Senda Tântrica</h3>
+                        <p class="course-desc">Aprofunde-se no caminho tântrico com práticas avançadas para expansão de consciência e energia vital.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 6h 00min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tantra Quântico -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <i class="fas fa-atom"></i>
+                        <span class="course-type">CURSO</span>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">Tantra Quântico e Prosperidade</h3>
+                        <p class="course-desc">A fusão do conhecimento tântrico com princípios quânticos para manifestar abundância em todas as áreas da vida.</p>
+                        <div class="course-meta">
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mentoria em Grupo -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <i class="fas fa-users"></i>
+                        <span class="course-type mentoria">MENTORIA</span>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">Despertar do Magnetismo Tântrico</h3>
+                        <p class="course-desc">Mentoria em grupo gravada com acompanhamento intensivo para despertar todo o seu potencial magnético.</p>
+                        <div class="course-meta">
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Autoestima Blindada -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="course-type programa">PROGRAMA</span>
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">Autoestima Blindada</h3>
+                        <p class="course-desc">Programa completo para construir uma autoestima inabalável e se tornar imune às críticas e julgamentos externos.</p>
+                        <div class="course-meta">
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
                         </div>
                     </div>
                 </div>
@@ -747,7 +776,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- NÍVEL 3 - PALADIN -->
+    <!-- NÍVEL 3 - PALADIN / ÍSIS -->
     <section class="level-section level-3" id="nivel-3">
         <video class="video-background" autoplay muted loop playsinline>
             <source src="https://res.cloudinary.com/dlueoyrhe/video/upload/v1764885796/oficialisis_zxcfhq.mp4" type="video/mp4">
@@ -768,62 +797,50 @@
             </div>
 
             <div class="courses-grid">
+                <!-- Paladins -->
                 <div class="course-card">
                     <div class="course-thumbnail">
-                        <i class="fas fa-landmark"></i>
-                        <span class="course-type">MASTERMIND</span>
+                        <i class="fas fa-crown"></i>
+                        <span class="course-type">CURSO</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Mistérios de Ísis</h3>
-                        <p class="course-desc">Conhecimentos reservados aos iniciados do Círculo Dourado.</p>
+                        <h3 class="course-title">Paladins: A Liderança dos Bons</h3>
+                        <p class="course-desc">Formação completa para se tornar um líder íntegro, ético e inspirador. A arte de liderar pelo exemplo.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 8h 00min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status available"><i class="fas fa-check-circle"></i> Disponível</span>
+                            <a href="https://pay.hotmart.com/A94966816P" target="_blank" class="course-btn">ACESSAR</a>
                         </div>
                     </div>
                 </div>
 
+                <!-- Jornada 90 Dias -->
                 <div class="course-card">
                     <div class="course-thumbnail">
-                        <i class="fas fa-language"></i>
-                        <span class="course-type">MASTERCLASS</span>
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="course-type jornada">JORNADA</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Decifrando Hieróglifos</h3>
-                        <p class="course-desc">A arte de interpretar símbolos sagrados e mensagens ocultas.</p>
+                        <h3 class="course-title">Jornada de Transformação Tântrica 90 Dias</h3>
+                        <p class="course-desc">Imersão de 90 dias com práticas diárias, acompanhamento e rituais para uma transformação profunda e permanente.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 4h 30min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Mentoria VIP -->
                 <div class="course-card">
                     <div class="course-thumbnail">
-                        <i class="fas fa-shield-alt"></i>
-                        <span class="course-type">WORKSHOP</span>
+                        <i class="fas fa-star"></i>
+                        <span class="course-type mentoria">MENTORIA VIP</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Construindo a Fortaleza</h3>
-                        <p class="course-desc">Fortaleça sua mente e espírito contra influências negativas.</p>
+                        <h3 class="course-title">Mentoria VIP 1:1 - Magnetismo Quântico e Sucesso Pessoal</h3>
+                        <p class="course-desc">Acompanhamento individual exclusivo para alcançar resultados extraordinários na vida pessoal e profissional.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 3h 15min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-circle-notch"></i>
-                        <span class="course-type">RITUAL</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Iniciação ao Círculo</h3>
-                        <p class="course-desc">Cerimônia de entrada para o seleto grupo de Paladinos.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 2h 00min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
                         </div>
                     </div>
                 </div>
@@ -835,7 +852,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- NÍVEL 4 - ELITE/MASTER/GOD-TIER -->
+    <!-- NÍVEL 4 - ELITE/GOD-TIER / TRONO -->
     <section class="level-section level-4" id="nivel-4">
         <video class="video-background" autoplay muted loop playsinline>
             <source src="https://res.cloudinary.com/dlueoyrhe/video/upload/v1764885835/oficialtoth_bm0iun.mp4" type="video/mp4">
@@ -855,63 +872,19 @@
                 </p>
             </div>
 
-            <div class="courses-grid">
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-crown"></i>
-                        <span class="course-type">ELITE</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Ascensão ao Trono</h3>
-                        <p class="course-desc">O conhecimento supremo reservado aos mestres do destino.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 12h 00min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-book-open"></i>
-                        <span class="course-type">TÁBUAS</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Sabedoria de Toth</h3>
-                        <p class="course-desc">Os ensinamentos herméticos do deus da sabedoria e magia.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 10h 30min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-thumbnail">
-                        <i class="fas fa-sun"></i>
-                        <span class="course-type">INVOCAÇÃO</span>
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">Poder de Rá</h3>
-                        <p class="course-desc">Canalização da energia solar suprema para manifestação total.</p>
-                        <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 6h 45min</span>
-                            <button class="course-btn">ACESSAR</button>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="courses-grid single-item">
+                <!-- Do Zero ao Zen -->
                 <div class="course-card">
                     <div class="course-thumbnail">
                         <i class="fas fa-infinity"></i>
-                        <span class="course-type">TRANSCENDÊNCIA</span>
+                        <span class="course-type">ELITE</span>
                     </div>
                     <div class="course-info">
-                        <h3 class="course-title">Renascimento Elevado</h3>
-                        <p class="course-desc">O ritual final de transformação e domínio absoluto.</p>
+                        <h3 class="course-title">Do Zero ao Zen e Negócios</h3>
+                        <p class="course-desc">O programa definitivo que une espiritualidade e empreendedorismo. Construa um império enquanto mantém sua paz interior e propósito alinhado.</p>
                         <div class="course-meta">
-                            <span class="course-duration"><i class="fas fa-clock"></i> 8h 00min</span>
-                            <button class="course-btn">ACESSAR</button>
+                            <span class="course-status coming"><i class="fas fa-clock"></i> Em breve</span>
+                            <button class="course-btn coming-soon">EM BREVE</button>
                         </div>
                     </div>
                 </div>
@@ -925,6 +898,9 @@
     <footer class="footer">
         <img src="https://i.ibb.co/Fbxk6mQ3/Design-sem-nome-2.png" alt="Doutrina Akáshica" class="footer-logo">
         <p class="footer-text">DOUTRINA AKÁSHICA © 2025 — TODOS OS DIREITOS RESERVADOS</p>
+        <a href="https://hubcomplier.github.io/AKASHAHUB/" target="_blank" class="footer-link">
+            <i class="fas fa-arrow-left"></i> VOLTAR AO AKASHA HUB
+        </a>
     </footer>
 
     <script>
@@ -957,18 +933,16 @@
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
+                    entry.target.style.transition = 'all 0.6s ease';
                 }
             });
         }, { threshold: 0.1 });
 
-        document.querySelectorAll('.course-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
+        document.querySelectorAll('.course-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.1}s`;
             observer.observe(card);
         });
     </script>
 
 </body>
-
 </html>
